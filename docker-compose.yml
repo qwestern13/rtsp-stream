@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  rtsp-server:
+    image: bluenviron/mediamtx:latest
+    ports:
+      - "8554:8554/tcp"
+      - "8554:8554/udp"
+      - "8888:8888"   # HLS
+    restart: unless-stopped
+
+  streamer:
+    build: .
+    depends_on:
+      - rtsp-server
+    volumes:
+      - ./videos:/videos
