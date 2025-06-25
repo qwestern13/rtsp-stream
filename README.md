@@ -11,18 +11,16 @@
 - Собрать контейнеры
 
 
-
-
     docker-compose build
 
 - Запустить контейнеры
 
 
 
-
-
     docker-compose up -d
 - Смотреть поток по RTSP
+
+
 
 
 
