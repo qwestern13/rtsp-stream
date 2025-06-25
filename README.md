@@ -11,15 +11,13 @@
 - Собрать контейнеры
 
 
-
-     docker-compose build
+`docker-compose build
+`
 - Запустить контейнеры
 
 
 
-        docker-compose up -d
+`docker-compose up -d`
 - Смотреть поток по RTSP
 
-
-
-        rtsp://localhost:8554/<Имя Файла>ла>
+`rtsp://localhost:8554/<Имя Файла>`
