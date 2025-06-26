@@ -19,17 +19,26 @@ class Program
         if (!Directory.Exists(folder))
         {
             Console.WriteLine("Folder doesn't exist!");
+            return;
+        }
+        
+        var mcmFiles = Directory.GetFiles(folder, "*.mcm");
+        foreach (var mcmFile in mcmFiles)
+        {
+            File.Move(mcmFile, mcmFile.Replace(".mcm", ".mp4"), true);
         }
 
-        var files = Directory.GetFiles(folder, "*.mp4");
+        var mp4Files = Directory.GetFiles(folder, "*.mp4");
         
-        if (files.Length == 0)
+        //var allFiles = mp4Files.Union(mcmFiles).ToArray();
+        
+        if (mp4Files.Length == 0)
         {
             Console.WriteLine("No files found!");
         }
         else
         {
-            foreach (var file in files)
+            foreach (var file in mp4Files)
             {
                 string filename = Path.GetFileName(file);
                 string rtspUrl = $"rtsp://localhost:{port}/{filename}";
@@ -40,7 +49,7 @@ class Program
                 var processStartInfo = new ProcessStartInfo
                 {
                     FileName = "ffmpeg",
-                    Arguments = $"-re -i \"{file}\" -c:v copy -c:a copy -f rtsp rtsp://rtsp-server:{port}/{filename}",
+                    Arguments = $"-re -stream_loop -1 -i \"{file}\" -c:v libx264 -preset ultrafast -pix_fmt yuv420p -c:a copy -f rtsp rtsp://rtsp-server:{port}/{filename}",
                     RedirectStandardOutput = false,
                     RedirectStandardError = false,
                     UseShellExecute = false,
