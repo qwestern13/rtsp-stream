@@ -21,47 +21,68 @@ class Program
             Console.WriteLine("Folder doesn't exist!");
             return;
         }
-        
+       
         var mcmFiles = Directory.GetFiles(folder, "*.mcm");
-        foreach (var mcmFile in mcmFiles)
+        if (mcmFiles.Length > 0)
         {
-            File.Move(mcmFile, mcmFile.Replace(".mcm", ".mp4"), true);
+            foreach (var file in mcmFiles)
+            {
+                var originalFileName = Path.GetFileNameWithoutExtension(file);
+                ConvertToMp4(file, folder + "/" +  originalFileName);
+            } 
         }
-
+        
         var mp4Files = Directory.GetFiles(folder, "*.mp4");
-        
-        //var allFiles = mp4Files.Union(mcmFiles).ToArray();
-        
         if (mp4Files.Length == 0)
         {
-            Console.WriteLine("No files found!");
+            Console.WriteLine("No MP4 files found!");
         }
         else
         {
             foreach (var file in mp4Files)
             {
-                string filename = Path.GetFileName(file);
-                string rtspUrl = $"rtsp://localhost:{port}/{filename}";
-
-                Console.WriteLine("Video file: " + filename);
-                Console.WriteLine(rtspUrl);
-
-                var processStartInfo = new ProcessStartInfo
-                {
-                    FileName = "ffmpeg",
-                    Arguments = $"-re -stream_loop -1 -i \"{file}\" -c:v libx264 -preset ultrafast -pix_fmt yuv420p -c:a copy -f rtsp rtsp://rtsp-server:{port}/{filename}",
-                    RedirectStandardOutput = false,
-                    RedirectStandardError = false,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-            var process = new Process { StartInfo = processStartInfo };
-            process.Start();
-
-            Console.WriteLine($"Stream started: rtsp://localhost:{port}/{filename}");
+                StartRtspStream(file, port);
             }
+            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
         }
-		System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+
+    }
+    
+    static void ConvertToMp4(string inputFile, string outputFile)
+    {
+        var processStartInfo = new ProcessStartInfo
+        {
+            FileName = "ffmpeg",
+            Arguments = $"-i \"{inputFile}\" -vcodec copy -acodec copy \"{outputFile}.mp4\"",
+            //Arguments = $"-i \"{inputFile}\" -c:v libx264 -preset fast -pix_fmt yuv420p -c:a aac -ar 48000 -b:a 128k -movflags +faststart \"{outputFile}.mp4\"",
+            RedirectStandardOutput = false,
+            RedirectStandardError = false,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        
+        var process = new Process { StartInfo = processStartInfo };
+        process.Start();
+        process.WaitForExit();
+        Console.WriteLine($"Convert completed: {outputFile}");
+    }
+
+    static void StartRtspStream(string inputFile, int port)
+    {
+        var processStartInfo = new ProcessStartInfo
+        {
+            FileName = "ffmpeg",
+            Arguments = $"-re -stream_loop -1 -i \"{inputFile}\" -c:v libx264 -preset ultrafast -pix_fmt yuv420p -c:a copy -movflags +faststart -f rtsp rtsp://rtsp-server:{port}{inputFile}",
+            //Arguments = $"-i \"{inputFile}\" -vcodec copy -acodec copy \"{outputFile}.mp4\"",
+            RedirectStandardOutput = false,
+            RedirectStandardError = false,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        var process = new Process { StartInfo = processStartInfo };
+        process.Start();
+
+        Console.WriteLine($"Stream started: rtsp://localhost:{port}{inputFile}");
+        
     }
 }
