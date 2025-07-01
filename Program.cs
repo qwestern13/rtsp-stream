@@ -28,7 +28,8 @@ class Program
             foreach (var file in mcmFiles)
             {
                 var originalFileName = Path.GetFileNameWithoutExtension(file);
-                ConvertToMp4(file, folder + "/" +  originalFileName);
+                var newFileName = folder + "/" +  originalFileName;
+                ConvertToMp4(file, folder + "/" +  newFileName);
             } 
         }
         
@@ -54,7 +55,6 @@ class Program
         {
             FileName = "ffmpeg",
             Arguments = $"-i \"{inputFile}\" -vcodec copy -acodec copy \"{outputFile}.mp4\"",
-            //Arguments = $"-i \"{inputFile}\" -c:v libx264 -preset fast -pix_fmt yuv420p -c:a aac -ar 48000 -b:a 128k -movflags +faststart \"{outputFile}.mp4\"",
             RedirectStandardOutput = false,
             RedirectStandardError = false,
             UseShellExecute = false,
@@ -69,11 +69,11 @@ class Program
 
     static void StartRtspStream(string inputFile, int port)
     {
+        var filename = Path.GetFileName(inputFile);
         var processStartInfo = new ProcessStartInfo
         {
             FileName = "ffmpeg",
-            Arguments = $"-re -stream_loop -1 -i \"{inputFile}\" -c:v libx264 -preset ultrafast -pix_fmt yuv420p -c:a copy -movflags +faststart -f rtsp rtsp://rtsp-server:{port}{inputFile}",
-            //Arguments = $"-i \"{inputFile}\" -vcodec copy -acodec copy \"{outputFile}.mp4\"",
+            Arguments = $"-re -stream_loop -1 -i \"{inputFile}\" -c:v libx264 -preset ultrafast -pix_fmt yuv420p -c:a copy -movflags +faststart -f rtsp rtsp://rtsp-server:{port}/{filename}",
             RedirectStandardOutput = false,
             RedirectStandardError = false,
             UseShellExecute = false,
@@ -82,7 +82,7 @@ class Program
         var process = new Process { StartInfo = processStartInfo };
         process.Start();
 
-        Console.WriteLine($"Stream started: rtsp://localhost:{port}{inputFile}");
+        Console.WriteLine($"Stream started: rtsp://localhost:{port}/{filename}");
         
     }
 }
