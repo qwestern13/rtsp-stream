@@ -28,8 +28,8 @@ class Program
             foreach (var file in mcmFiles)
             {
                 var originalFileName = Path.GetFileNameWithoutExtension(file);
-                var newFileName = folder + "/" +  originalFileName;
-                ConvertToMp4(file, folder + "/" +  newFileName);
+                var outputFile = folder + "/" +  originalFileName;
+                ConvertToMp4(file, outputFile);
             } 
         }
         
