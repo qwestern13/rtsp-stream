@@ -23,7 +23,7 @@ class Program
             return;
         }
         
-        //Проверяем наличие файлов с расширением .mcm, если есть конвертируем в .mp4
+        // Проверяем наличие файлов с расширением .mcm, если есть конвертируем в .mp4
         var mcmFiles = Directory.GetFiles(folder, "*.mcm");
         if (mcmFiles.Length > 0)
         {
@@ -34,7 +34,7 @@ class Program
                 ConvertToMp4(file, outputFile);
             }
         }
-        //Ищем файлы .mp4 
+        // Ищем файлы .mp4 
         var mp4Files = Directory.GetFiles(folder, "*.mp4");
         if (mp4Files.Length == 0)
         {
@@ -42,7 +42,7 @@ class Program
         }
         else
         {
-            //проверяем наличие имен файлов на кириллице, если такие есть переименовываем на транслите
+            // Проверяем наличие имен файлов на кириллице, если такие есть переименовываем на транслите
             foreach (var file in mp4Files)
             {
                 var originalFileName = Path.GetFileName(file);
