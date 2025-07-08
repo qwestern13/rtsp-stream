@@ -46,8 +46,17 @@ class Program
             foreach (var file in mp4Files)
             {
                 var originalFileName = Path.GetFileName(file);
-                var tranlitedFileName = TranslitFileName(originalFileName);
-                System.IO.File.Move(folder + "/" + originalFileName, folder + "/" + tranlitedFileName);
+                var translitedFileName = TranslitFileName(originalFileName);
+                // Проверяем существует ли файл в директории с таким же именем как после транслитерации
+                // Если существует, добавляем DateTime в начало имени
+                if (File.Exists(folder + "/" + translitedFileName) && originalFileName != translitedFileName)
+                {
+                    System.IO.File.Move(folder + "/" + originalFileName, folder + "/" + DateTime.Now.ToString("yy-dd-M-HH-mm-ss") + translitedFileName);
+                }
+                else
+                {
+                    System.IO.File.Move(folder + "/" + originalFileName, folder + "/" + translitedFileName);
+                }
             }
             
             var mp4FilesAfterTranslit = Directory.GetFiles(folder, "*.mp4");
@@ -95,8 +104,20 @@ class Program
         };
         var process = new Process { StartInfo = processStartInfo };
         process.Start();
+        
+        try
+        {
+            FileInfo fileDirectory = new FileInfo(inputFile);
+            StreamWriter sw = new StreamWriter(fileDirectory.DirectoryName + "/rtsp.txt", true, Encoding.ASCII);
+            sw.WriteLine($"Stream started: rtsp://localhost:{port}/{filename}");
+            sw.Close();
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine("Exception: " + e.Message);
+        }
 
-        Console.WriteLine($"Stream started: rtsp://localhost:{port}/{filename}");
+        //Console.WriteLine($"Stream started: rtsp://localhost:{port}/{filename}");
 
     }
 
