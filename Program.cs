@@ -22,7 +22,11 @@ class Program
             Console.WriteLine("Folder doesn't exist!");
             return;
         }
-        
+        // Проверяем есть ли текстовый файл с rtsp ссылками rtsp.txt
+        if (File.Exists(folder + "/rtsp.txt"))
+        {
+            File.Delete(folder + "/rtsp.txt");
+        }
         // Проверяем наличие файлов с расширением .mcm, если есть конвертируем в .mp4
         var mcmFiles = Directory.GetFiles(folder, "*.mcm");
         if (mcmFiles.Length > 0)
