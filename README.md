@@ -19,3 +19,4 @@ docker compose up -d
 ```
 rtsp://localhost:8554/<Имя Файла>
 ```
+При старте создается rtsp-links.txt, в нем содержатся RTSP-ссылки 
