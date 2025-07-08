@@ -38,7 +38,7 @@ class Program
         var mp4Files = Directory.GetFiles(folder, "*.mp4");
         if (mp4Files.Length == 0)
         {
-            Console.WriteLine("No MP4 files found!");
+            Console.WriteLine("No MP4 or MCM files found!");
         }
         else
         {
