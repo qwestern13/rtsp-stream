@@ -23,9 +23,9 @@ class Program
             return;
         }
         // Проверяем есть ли текстовый файл с rtsp ссылками rtsp.txt
-        if (File.Exists(folder + "/rtsp.txt"))
+        if (File.Exists(folder + "/rtsp-links.txt"))
         {
-            File.Delete(folder + "/rtsp.txt");
+            File.Delete(folder + "/rtsp-links.txt");
         }
         // Проверяем наличие файлов с расширением .mcm, если есть конвертируем в .mp4
         var mcmFiles = Directory.GetFiles(folder, "*.mcm");
@@ -112,7 +112,7 @@ class Program
         try
         {
             FileInfo fileDirectory = new FileInfo(inputFile);
-            StreamWriter sw = new StreamWriter(fileDirectory.DirectoryName + "/rtsp.txt", true, Encoding.ASCII);
+            StreamWriter sw = new StreamWriter(fileDirectory.DirectoryName + "/rtsp-links.txt", true, Encoding.ASCII);
             sw.WriteLine($"Stream started: rtsp://localhost:{port}/{filename}");
             sw.Close();
         }
