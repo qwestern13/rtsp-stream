@@ -1,8 +1,10 @@
-﻿namespace VideoFinder;
+﻿using System.Diagnostics;
 
-public class ConvertToMp4
+namespace VideoFinder;
+
+public static class VideoConverter
 {
-    static void ConvertToMp4(string inputFile, string outputFile)
+    public static void ConvertToMp4(string inputFile, string outputFile)
     {
         var processStartInfo = new ProcessStartInfo
         {
